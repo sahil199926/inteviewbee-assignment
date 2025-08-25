@@ -9,6 +9,7 @@ export interface IJob {
   summary: string;
   requirements: string[];
 
+  postedDate: string;
   jobTypes: string[];
   workMode: string;
 

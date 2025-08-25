@@ -114,9 +114,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       </CardContent>
 
       <CardFooter className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          Posted on {formatDate(job.createdAt)}
-        </div>
+        <div className="text-sm text-gray-500">Posted {job.postedDate}</div>
         <div className="flex space-x-2">
           <Button
             variant="primary"
