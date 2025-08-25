@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Button from "./ui/Button";
+import Button from "../ui/Button";
 
 const SearchFilters: React.FC = () => {
   const router = useRouter();

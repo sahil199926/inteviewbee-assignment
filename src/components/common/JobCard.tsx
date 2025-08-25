@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { IJob } from "../models/Job";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/Card";
-import Badge from "./ui/Badge";
-import Button from "./ui/Button";
+import { IJob } from "../../models/Job";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/Card";
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
 
 interface JobCardProps {
   job: IJob;

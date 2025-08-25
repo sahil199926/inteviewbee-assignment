@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { IJob } from "../models/Job";
-import JobCard from "./JobCard";
-import SearchFilters from "./SearchFilters";
-import Pagination from "./Pagination";
+import { IJob } from "../../models/Job";
+import JobCard from "../common/JobCard";
+import SearchFilters from "../common/SearchFilters";
+import Pagination from "../common/Pagination";
 
 interface HomePageProps {
   jobs: IJob[];
