@@ -67,11 +67,6 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
             </h3>
             <p className="text-lg text-blue-600 font-medium">{job.company}</p>
           </div>
-          <div className="flex flex-col items-end space-y-2">
-            {job.isNew && <Badge variant="success">New</Badge>}
-            {job.isUrgentlyHiring && <Badge variant="danger">Urgent</Badge>}
-            {job.isSponsored && <Badge variant="warning">Sponsored</Badge>}
-          </div>
         </div>
       </CardHeader>
 
@@ -148,17 +143,12 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
           Posted on {formatDate(job.createdAt)}
         </div>
         <div className="flex space-x-2">
-          {job.isEasilyApplicable && (
-            <Badge variant="success" className="text-xs">
-              Easy Apply
-            </Badge>
-          )}
           <Button
             variant="primary"
             size="sm"
             onClick={() => window.open(job.sourceUrl, "_blank")}
           >
-            View Job
+            Apply Now
           </Button>
         </div>
       </CardFooter>

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const limit = parseInt(searchParams.get("limit") || "12");
     const search = searchParams.get("search") || "";
     const location = searchParams.get("location") || "";
     const experienceLevel = searchParams.get("experienceLevel") || "";
@@ -66,24 +66,6 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching jobs:", error);
     return NextResponse.json(
       { error: "Failed to fetch jobs" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    await connectToDatabase();
-
-    const jobData = await request.json();
-    const job = new Job(jobData);
-    await job.save();
-
-    return NextResponse.json(job, { status: 201 });
-  } catch (error) {
-    console.error("Error creating job:", error);
-    return NextResponse.json(
-      { error: "Failed to create job" },
       { status: 500 }
     );
   }

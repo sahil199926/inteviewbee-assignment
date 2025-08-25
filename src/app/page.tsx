@@ -1,13 +1,11 @@
 import { Metadata } from "next";
-import connectToDatabase from "../lib/mongodb";
-import Job from "../models/Job";
 import HomePage from "../components/HomePage";
 
 // Generate dynamic metadata based on search parameters
 export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
-  const { search, location, experienceLevel, workMode } = searchParams;
+  const { search, location, experienceLevel, workMode } = await searchParams;
 
   let title = "Job Portal Dashboard | Find Your Dream Job";
   let description =
@@ -194,67 +192,38 @@ interface SearchParams {
 }
 
 interface Props {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }
 
 async function fetchJobs(searchParams: SearchParams) {
   try {
-    await connectToDatabase();
+    // Build query parameters for API call
+    const params = new URLSearchParams();
 
-    const page = parseInt(searchParams.page || "1");
-    const limit = 12;
-    const search = searchParams.search || "";
-    const location = searchParams.location || "";
-    const experienceLevel = searchParams.experienceLevel || "";
-    const workMode = searchParams.workMode || "";
+    if (searchParams.page) params.set("page", searchParams.page);
+    if (searchParams.search) params.set("search", searchParams.search);
+    if (searchParams.location) params.set("location", searchParams.location);
+    if (searchParams.experienceLevel)
+      params.set("experienceLevel", searchParams.experienceLevel);
+    if (searchParams.workMode) params.set("workMode", searchParams.workMode);
 
-    // Build filter object
-    const filter: Record<string, unknown> = {};
+    // Determine base URL for API call
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    if (search) {
-      filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { company: { $regex: search, $options: "i" } },
-        { skills: { $in: [new RegExp(search, "i")] } },
-        { searchKeywords: { $in: [new RegExp(search, "i")] } },
-      ];
+    const apiUrl = `${baseUrl}/api/jobs?${params.toString()}`;
+
+    const response = await fetch(apiUrl, {
+      cache: "no-store", // Ensure fresh data for server-side rendering
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch jobs: ${response.status}`);
     }
 
-    if (location) {
-      filter.location = { $regex: location, $options: "i" };
-    }
-
-    if (experienceLevel) {
-      filter.experienceLevel = experienceLevel;
-    }
-
-    if (workMode) {
-      filter.workMode = workMode;
-    }
-
-    // Calculate skip value for pagination
-    const skip = (page - 1) * limit;
-
-    // Get jobs with pagination
-    const jobs = await Job.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean();
-
-    // Get total count for pagination
-    const total = await Job.countDocuments(filter);
-
-    return {
-      jobs: JSON.parse(JSON.stringify(jobs)),
-      pagination: {
-        current: page,
-        pages: Math.ceil(total / limit),
-        total,
-        hasNext: page < Math.ceil(total / limit),
-        hasPrev: page > 1,
-      },
-    };
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching jobs:", error);
     return {
@@ -271,7 +240,8 @@ async function fetchJobs(searchParams: SearchParams) {
 }
 
 export default async function Home({ searchParams }: Props) {
-  const { jobs, pagination } = await fetchJobs(searchParams);
+  const resolvedSearchParams = await searchParams;
+  const { jobs, pagination } = await fetchJobs(resolvedSearchParams);
 
   // Generate structured data schemas
   const jobSchema = generateJobSchema(jobs);
@@ -294,7 +264,7 @@ export default async function Home({ searchParams }: Props) {
       <HomePage
         jobs={jobs}
         pagination={pagination}
-        searchParams={searchParams}
+        searchParams={resolvedSearchParams}
       />
     </>
   );

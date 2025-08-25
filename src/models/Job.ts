@@ -23,11 +23,6 @@ export interface IJob {
   sourceUrl: string;
   jobId: string;
   source: string;
-  isEasilyApplicable: boolean;
-  isSponsored: boolean;
-  isUrgentlyHiring: boolean;
-  isNew: boolean;
-  responseTime: string | null;
   experienceLevel: string;
   skills: string[];
   scrapedAt: Date;
@@ -65,11 +60,6 @@ const jobSchema = new mongoose.Schema(
     sourceUrl: { type: String, required: true },
     jobId: { type: String, required: true },
     source: { type: String, required: true },
-    isEasilyApplicable: { type: Boolean, default: false },
-    isSponsored: { type: Boolean, default: false },
-    isUrgentlyHiring: { type: Boolean, default: false },
-    isNew: { type: Boolean, default: false },
-    responseTime: { type: String, default: null },
     experienceLevel: { type: String },
     skills: [{ type: String }],
     scrapedAt: { type: Date, required: true },
