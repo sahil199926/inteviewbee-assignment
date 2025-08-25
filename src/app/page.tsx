@@ -91,19 +91,6 @@ function generateJobSchema(jobs: JobData[]) {
           addressCountry: "IN",
         },
       },
-      baseSalary:
-        job.salary?.min && job.salary?.max
-          ? {
-              "@type": "MonetaryAmount",
-              currency: job.salary.currency || "INR",
-              value: {
-                "@type": "QuantitativeValue",
-                minValue: job.salary.min,
-                maxValue: job.salary.max,
-                unitText: job.salary.period || "YEAR",
-              },
-            }
-          : undefined,
       skills: job.skills?.join(", "),
       experienceRequirements: job.experienceLevel,
       workLocation: job.workMode,
@@ -167,13 +154,6 @@ interface JobData {
   description: string;
   summary: string;
   requirements: string[];
-  salary?: {
-    raw: string | null;
-    min: number | null;
-    max: number | null;
-    currency: string;
-    period: string | null;
-  };
   jobTypes: string[];
   workMode: string;
   sourceUrl: string;
